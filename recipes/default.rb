@@ -9,20 +9,22 @@
 
 tcl_major_version = node['tcl']['version'].split('.')[0..1].join('.')
 
-remote_file "#{Chef::Config[:file_cache_path]}/tcl-#{node['tcl']['version']}.tar.gz)" do
+remote_file "Tcl distribution, v. #{node['tcl']['version']}" do
+  path   "#{Chef::Config[:file_cache_path]}/tcl-#{node['tcl']['version']}.tar.gz"
   source "http://downloads.sourceforge.net/project/tcl/Tcl/#{node['tcl']['version']}/tcl#{node['tcl']['version']}-src.tar.gz"
 
   not_if { ::File.exists? "#{Chef::Config[:file_cache_path]}/tcl-#{node['tcl']['version']}.tar.gz" }
 end
 
-execute "tar xzf #{Chef::Config[:file_cache_path]}/tcl-#{node['tcl']['version']}.tar.gz" do
+execute "Unpack tcl distribution" do
+  command "tar xzf #{Chef::Config[:file_cache_path]}/tcl-#{node['tcl']['version']}.tar.gz" do
   
-  not_if { ::File.directory? "#{Chef::Config[:file_cache_path]}/tcl#{node['tcl']['version']}" }
+  not_if  { ::File.directory? "#{Chef::Config[:file_cache_path]}/tcl#{node['tcl']['version']}" }
 end
 
 # TODO: make --enable-64bit optional
 
-bash "Compile TCL" do
+bash "Compile tcl" do
   cwd "#{Chef::Config[:file_cache_path]}/tcl#{node['tcl']['version']}"
 
   code<<-EOH
