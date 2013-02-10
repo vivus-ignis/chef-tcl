@@ -22,12 +22,12 @@ execute "Unpack tcl distribution" do
   not_if  { ::File.directory? "#{Chef::Config[:file_cache_path]}/tcl#{node['tcl']['version']}" }
 end
 
-# TODO: make --enable-64bit optional
+is_64bit = node['kernel']['machine'] == "x86_64" ? "--enable-64bit" : ""
 
 bash "Compile tcl" do
   cwd "#{Chef::Config[:file_cache_path]}/tcl#{node['tcl']['version']}"
 
-  code<<-EOH
+  code <<-EOH
     set -x
     exec >  /var/tmp/chef-tcl-compile.log
     exec 2> /var/tmp/chef-tcl-compile.log
@@ -35,10 +35,10 @@ bash "Compile tcl" do
       --exec-prefix=#{node['tcl']['install_prefix']}/tcl \
       --enable-threads \
       --enable-shared \
-      --enable-64bit
-    make
-    make install
-    make install-private-headers
+      #{is_64bit} \
+    && make \
+    && make install \
+    && make install-private-headers
   EOH
 end
 
