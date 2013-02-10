@@ -23,4 +23,6 @@ bash "Compile tcllib" do
     make
     make install
   EOH
+
+  not_if { ::File.directory? "#{node['tcl']['install_prefix']}/lib/tcllib#{node['tcl']['tcllib_version']}" }
 end
