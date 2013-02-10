@@ -17,7 +17,8 @@ remote_file "Tcl distribution, v. #{node['tcl']['version']}" do
 end
 
 execute "Unpack tcl distribution" do
-  command "tar xzf #{Chef::Config[:file_cache_path]}/tcl-#{node['tcl']['version']}.tar.gz" do
+  cwd     Chef::Config[:file_cache_path]
+  command "tar xzf #{Chef::Config[:file_cache_path]}/tcl-#{node['tcl']['version']}.tar.gz" 
   
   not_if  { ::File.directory? "#{Chef::Config[:file_cache_path]}/tcl#{node['tcl']['version']}" }
 end
@@ -25,7 +26,7 @@ end
 is_64bit = node['kernel']['machine'] == "x86_64" ? "--enable-64bit" : ""
 
 bash "Compile tcl" do
-  cwd "#{Chef::Config[:file_cache_path]}/tcl#{node['tcl']['version']}"
+  cwd "#{Chef::Config[:file_cache_path]}/tcl#{node['tcl']['version']}/unix"
 
   code <<-EOH
     set -x
@@ -40,10 +41,12 @@ bash "Compile tcl" do
     && make install \
     && make install-private-headers
   EOH
+
+  not_if { ::File.exists? "#{node['tcl']['install_prefix']}/tcl/bin/tclsh#{tcl_major_version}" }
 end
 
 link "/usr/bin/tclsh" do
   to "#{node['tcl']['install_prefix']}/tcl/bin/tclsh#{tcl_major_version}"
 end
 
-#include_recipe "tcl::lib"
+include_recipe "tcl::lib"

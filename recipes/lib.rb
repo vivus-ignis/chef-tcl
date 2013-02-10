@@ -6,6 +6,7 @@ remote_file "Tcllib distribution, v. #{node['tcl']['tcllib_version']}" do
 end
 
 execute "Unpack tcllib distribution" do
+  cwd     Chef::Config[:file_cache_path]
   command "tar xzf #{Chef::Config[:file_cache_path]}/tcllib-#{node['tcl']['tcllib_version']}.tar.gz"
   
   not_if  { ::File.directory? "#{Chef::Config[:file_cache_path]}/tcllib-#{node['tcl']['version']}" }
