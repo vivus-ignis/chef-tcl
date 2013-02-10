@@ -46,4 +46,4 @@ link "/usr/bin/tclsh" do
   to "#{node['tcl']['install_prefix']}/tcl/bin/tclsh#{tcl_major_version}"
 end
 
-include_recipe "tcl::lib"
+#include_recipe "tcl::lib"
