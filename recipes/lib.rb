@@ -14,7 +14,7 @@ end
 bash "Compile tcllib" do
   cwd "#{Chef::Config[:file_cache_path]}/tcllib-#{node['tcl']['tcllib_version']}"
 
-  code<<-EOH
+  code <<-EOH
     set -x
     exec >  /var/tmp/chef-tcllib-compile.log
     exec 2> /var/tmp/chef-tcllib-compile.log
